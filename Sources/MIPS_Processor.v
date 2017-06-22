@@ -183,6 +183,7 @@ MUX_ForReadDataAndInmediate
 );
 
 
+
 ALUControl
 ArithmeticLogicUnitControl
 (
@@ -197,6 +198,7 @@ ArithmeticLogicUnitControl
 ALU
 ArithmeticLogicUnit 
 (
+	.Shamt(Instruction_wire[10:6]),
 	.ALUOperation(ALUOperation_wire),
 	.A(ReadData1_wire),
 	.B(ReadData2OrInmmediate_wire),

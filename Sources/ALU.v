@@ -18,7 +18,8 @@
 ******************************************************************/
 
 module ALU 
-(
+(	
+	input [4:0] Shamt,
 	input [3:0] ALUOperation,
 	input [31:0] A,
 	input [31:0] B,
@@ -48,7 +49,7 @@ localparam SLL = 4'b0101;
 		  NOR: // or
 			ALUResult= ~(A|B);
 		  SLL:
-			//ALUResult= B<<shamt;
+			ALUResult= B << Shamt;
 		default:
 			ALUResult= 0;
 		endcase // case(control)

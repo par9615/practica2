@@ -1,0 +1,10 @@
+*.mpf
+*.qpf
+*.qsf
+*.txt
+db/
+incremental_db/
+output_files/
+*.wlf
+work/
+*mti
