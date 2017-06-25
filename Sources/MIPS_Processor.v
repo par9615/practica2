@@ -73,9 +73,12 @@ wire [31:0] PC_4_wire;
 wire [31:0] InmmediateExtendAnded_wire;
 wire [31:0] PCtoBranch_wire;
 
-wire [31:0] Adder_wire;
-wire [31:0] MUX_Branch_wire;
-wire [31:0] MUX_BranchResult;
+wire [31:0] ShiftLeft2_Branch_wire;
+wire [31:0] BranchAdder_Result;
+wire [31:0] MUX_Branch_Result;
+
+wire [31:0] MUX_Jump_Result;
+wire [31:0] ShiftLeft2_Jump_wire;
 integer ALUStatus;
 
 
@@ -103,7 +106,7 @@ ProgramCounter
 (
 	.clk(clk),
 	.reset(reset),
-	.NewPC(MUX_BranchResult),
+	.NewPC(MUX_Jump_Result),
 	.PCValue(PC_wire)
 );
 
@@ -214,11 +217,13 @@ ArithmeticLogicUnit
 
 
 /**********************************/
+/*************BEQ******************/
+/**********************************/
 ShiftLeft2
 ShiftBranch
 (
 	.DataInput(InmmediateExtend_wire),
-	.DataOutput(Adder_wire)
+	.DataOutput(ShiftLeft2_Branch_wire)
 
 );
 
@@ -226,17 +231,38 @@ Adder32bits
 BranchAdder
 (
 	.Data0(PC_4_wire),
-	.Data1(Adder_wire),
-	.Result(MUX_Branch_wire)
+	.Data1(ShiftLeft2_Branch_wire),
+	.Result(BranchAdder_Result)
 );
 
 Multiplexer2to1
 MUX_ForBranchOrPC
 (
 	.MUX_Data0(PC_4_wire),
-	.MUX_Data1(MUX_Branch_wire),
+	.MUX_Data1(BranchAdder_Result),
 	.Selector(ZeroANDBrachEQ),
-	.MUX_Output(MUX_BranchResult)
+	.MUX_Output(MUX_Branch_Result)
+);
+
+
+/**********************************/
+/*************J******************/
+/**********************************/
+ShiftLeft2
+ShiftJump
+(
+	.DataInput(Instruction_wire[25:0]),
+	.DataOutput(ShiftLeft2_Jump_wire)
+);
+
+
+Multiplexer2to1
+MUX_ForJumpOrBranch
+(
+	.MUX_Data0(MUX_Branch_Result),
+	.MUX_Data1({PC_4_wire[31:28],ShiftLeft2_Jump_wire[27:0]}),
+	.Selector(Jump_wire),
+	.MUX_Output(MUX_Jump_Result)
 );
 assign ALUResultOut = ALUResult_wire;
 assign ZeroANDBrachEQ = BranchEQ_wire & Zero_wire;

@@ -43,8 +43,8 @@ always@(OP) begin
 		I_Type_ADDI:  ControlValues= 13'b000_101_00_00_100;
 		I_Type_ORI:   ControlValues= 13'b000_101_00_00_101;
 		I_Type_LUI:   ControlValues= 13'b010_101_00_00_100;
-		I_Type_BEQ:	  ControlValues= 13'b000_000_00_01_110;
-		J_Type_JUMP:  ControlValues= 13'b1xx_xx0_00_00_xxx;
+		I_Type_BEQ:	  ControlValues= 13'b00x_0x0_00_01_110;
+		J_Type_JUMP:  ControlValues= 13'b100_000_00_00_xxx;
 		default:
 			ControlValues= 13'b0000000000000;
 		endcase
