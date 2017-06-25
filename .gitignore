@@ -7,4 +7,5 @@ incremental_db/
 output_files/
 *.wlf
 work/
-*mti
+*.mti
+*.bak

@@ -35,7 +35,7 @@ localparam SUB = 4'b0100;
 localparam SLL = 4'b0101;
 localparam SRL = 4'b0110;
 
-   always @ (A or B or ALUOperation)
+   always @ (A or B or Shamt or ALUOperation)
      begin
 		case (ALUOperation)
 		  ADD: // add
