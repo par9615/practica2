@@ -14,7 +14,7 @@
 module Control
 (
 	input [5:0]OP,
-	
+	output Jump,
 	output RegDst,
 	output BranchEQ,
 	output BranchNE,
@@ -31,31 +31,39 @@ localparam R_Type = 0;
 localparam I_Type_ADDI = 6'h8;
 localparam I_Type_ORI = 6'h0d;
 localparam I_Type_LUI = 6'h0f;
+localparam I_Type_BEQ = 6'h04;
+localparam J_Type_JUMP = 6'h02;
+ 
 
-
-reg [11:0] ControlValues;
+reg [12:0] ControlValues;
 
 always@(OP) begin
 	casex(OP)
-		R_Type:       ControlValues= 12'b01_001_00_00_111;
-		I_Type_ADDI:  ControlValues= 12'b00_101_00_00_100;
-		I_Type_ORI:   ControlValues= 12'b00_101_00_00_101;
-		I_Type_LUI:   ControlValues= 12'b10_101_00_00_100;
-		
+		R_Type:       ControlValues= 13'b001_001_00_00_111;
+		I_Type_ADDI:  ControlValues= 13'b000_101_00_00_100;
+		I_Type_ORI:   ControlValues= 13'b000_101_00_00_101;
+		I_Type_LUI:   ControlValues= 13'b010_101_00_00_100;
+		I_Type_BEQ:	  ControlValues= 13'b000_000_00_01_110;
+		J_Type_JUMP:  ControlValues= 13'b1xx_xx0_00_00_xxx;
 		default:
-			ControlValues= 10'b0000000000;
+			ControlValues= 13'b0000000000000;
 		endcase
 end	
 
+assign Jump = ControlValues[12];
 assign ExtendSide = ControlValues[11];	
 assign RegDst = ControlValues[10];
+
 assign ALUSrc = ControlValues[9];
 assign MemtoReg = ControlValues[8];
 assign RegWrite = ControlValues[7];
+
 assign MemRead = ControlValues[6];
 assign MemWrite = ControlValues[5];
+
 assign BranchNE = ControlValues[4];
 assign BranchEQ = ControlValues[3];
+
 assign ALUOp = ControlValues[2:0];	
 
 endmodule

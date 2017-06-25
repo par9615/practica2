@@ -56,6 +56,8 @@ wire ALUSrc_wire;
 wire RegWrite_wire;
 wire Zero_wire;
 wire ExtendSide_wire;
+wire Jump_wire;
+
 wire [2:0] ALUOp_wire;
 wire [3:0] ALUOperation_wire;
 wire [4:0] WriteRegister_wire;
@@ -71,6 +73,9 @@ wire [31:0] PC_4_wire;
 wire [31:0] InmmediateExtendAnded_wire;
 wire [31:0] PCtoBranch_wire;
 
+wire [31:0] Adder_wire;
+wire [31:0] MUX_Branch_wire;
+wire [31:0] MUX_BranchResult;
 integer ALUStatus;
 
 
@@ -89,7 +94,8 @@ ControlUnit
 	.ALUOp(ALUOp_wire),
 	.ALUSrc(ALUSrc_wire),
 	.RegWrite(RegWrite_wire),
-	.ExtendSide(ExtendSide_wire)
+	.ExtendSide(ExtendSide_wire),
+	.Jump(Jump_wire)
 );
 
 PC_Register
@@ -97,7 +103,7 @@ ProgramCounter
 (
 	.clk(clk),
 	.reset(reset),
-	.NewPC(PC_4_wire),
+	.NewPC(MUX_BranchResult),
 	.PCValue(PC_wire)
 );
 
@@ -206,8 +212,34 @@ ArithmeticLogicUnit
 	.ALUResult(ALUResult_wire)
 );
 
-assign ALUResultOut = ALUResult_wire;
 
+/**********************************/
+ShiftLeft2
+ShiftBranch
+(
+	.DataInput(InmmediateExtend_wire),
+	.DataOutput(Adder_wire)
+
+);
+
+Adder32bits
+BranchAdder
+(
+	.Data0(PC_4_wire),
+	.Data1(Adder_wire),
+	.Result(MUX_Branch_wire)
+);
+
+Multiplexer2to1
+MUX_ForBranchOrPC
+(
+	.MUX_Data0(PC_4_wire),
+	.MUX_Data1(MUX_Branch_wire),
+	.Selector(ZeroANDBrachEQ),
+	.MUX_Output(MUX_BranchResult)
+);
+assign ALUResultOut = ALUResult_wire;
+assign ZeroANDBrachEQ = BranchEQ_wire & Zero_wire;
 
 endmodule
 
