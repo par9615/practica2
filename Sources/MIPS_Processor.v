@@ -57,6 +57,9 @@ wire RegWrite_wire;
 wire Zero_wire;
 wire ExtendSide_wire;
 wire Jump_wire;
+wire MemRead_wire;
+wire MemWrite_wire;
+wire MemToReg_wire;
 
 wire [2:0] ALUOp_wire;
 wire [3:0] ALUOperation_wire;
@@ -79,6 +82,9 @@ wire [31:0] MUX_Branch_Result;
 
 wire [31:0] MUX_Jump_Result;
 wire [31:0] ShiftLeft2_Jump_wire;
+
+wire [31:0] MUX_ALURAM_Result;
+wire [31:0] ReadDataRAM_wire;
 integer ALUStatus;
 
 
@@ -90,15 +96,18 @@ integer ALUStatus;
 Control
 ControlUnit
 (
+	.ALUOp(ALUOp_wire),
 	.OP(Instruction_wire[31:26]),
 	.RegDst(RegDst_wire),
 	.BranchNE(BranchNE_wire),
-	.BranchEQ(BranchEQ_wire),
-	.ALUOp(ALUOp_wire),
+	.BranchEQ(BranchEQ_wire),	
 	.ALUSrc(ALUSrc_wire),
 	.RegWrite(RegWrite_wire),
 	.ExtendSide(ExtendSide_wire),
-	.Jump(Jump_wire)
+	.Jump(Jump_wire),
+	.MemWrite(MemWrite_wire),
+	.MemRead(MemRead_wire),
+	.MemToReg(MemToReg_wire)
 );
 
 PC_Register
@@ -161,7 +170,7 @@ Register_File
 	.WriteRegister(WriteRegister_wire),
 	.ReadRegister1(Instruction_wire[25:21]),
 	.ReadRegister2(Instruction_wire[20:16]),
-	.WriteData(ALUResult_wire),
+	.WriteData(MUX_ALURAM_Result),
 	.ReadData1(ReadData1_wire),
 	.ReadData2(ReadData2_wire)
 
@@ -264,6 +273,38 @@ MUX_ForJumpOrBranch
 	.Selector(Jump_wire),
 	.MUX_Output(MUX_Jump_Result)
 );
+
+/**********************************/
+/*************SW******************/
+/**********************************/
+
+DataMemory
+#(
+	.DATA_WIDTH(32),
+	.MEMORY_DEPTH(256)
+)
+RAMDataMemory
+(
+	.WriteData(ReadData2_wire),
+	.Address(ALUResult_wire),
+	.MemWrite(MemWrite_wire),
+	.MemRead(MemRead_wire),
+	.ReadData(ReadDataRAM_wire),
+	.clk(clk)
+);
+
+Multiplexer2to1
+MUX_ForALUOrRAM
+(
+	.MUX_Data0(ALUResult_wire),
+	.MUX_Data1(ReadDataRAM_wire),
+	.MUX_Output(MUX_ALURAM_Result),
+	.Selector(MemToReg)
+	
+);
+
+
+
 assign ALUResultOut = ALUResult_wire;
 assign ZeroANDBrachEQ = BranchEQ_wire & Zero_wire;
 
