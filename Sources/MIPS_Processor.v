@@ -299,7 +299,7 @@ MUX_ForALUOrRAM
 	.MUX_Data0(ALUResult_wire),
 	.MUX_Data1(ReadDataRAM_wire),
 	.MUX_Output(MUX_ALURAM_Result),
-	.Selector(MemToReg)
+	.Selector(MemToReg_wire)
 	
 );
 

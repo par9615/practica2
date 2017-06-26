@@ -49,7 +49,8 @@ always@(OP) begin
 		I_Type_ORI:   ControlValues= 13'b000_101_00_00_101;
 		I_Type_LUI:   ControlValues= 13'b010_101_00_00_100;
 		I_Type_BEQ:	  ControlValues= 13'b00x_0x0_00_01_110;
-		I_Type_SW: 	  ControlValues= 13'b00x_1x0_01_00_100;	
+		I_Type_SW: 	  ControlValues= 13'b00x_1x0_01_00_100;
+		I_Type_LW:    ControlValues= 13'b000_111_10_00_100;
 		J_Type_JUMP:  ControlValues= 13'b100_000_00_00_xxx;
 		default:
 			ControlValues= 13'b0000000000000;
