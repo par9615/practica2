@@ -55,7 +55,7 @@ wire ALUSrc_wire;
 wire RegWrite_wire;
 wire Zero_wire;
 wire ExtendSide_wire;
-wire Jump_wire;
+wire [1:0]Jump_wire;
 wire MemRead_wire;
 wire MemWrite_wire;
 wire MemToReg_wire;
@@ -96,6 +96,7 @@ Control
 ControlUnit
 (
 	.ALUOp(ALUOp_wire),
+	.Funct(Instruction_wire[5:0]),
 	.OP(Instruction_wire[31:26]),
 	.RegDst(RegDst_wire),
 	.BranchNE(BranchNE_wire),
@@ -266,11 +267,12 @@ ShiftJump
 );
 
 
-Multiplexer2to1
+Multiplexer2to1_2
 MUX_ForJumpOrBranch
 (
 	.MUX_Data0(MUX_Branch_Result),
 	.MUX_Data1({PC_4_wire[31:28],ShiftLeft2_Jump_wire[27:0]}),
+	.MUX_Data2(ReadData1_wire),
 	.Selector(Jump_wire),
 	.MUX_Output(MUX_Jump_Result)
 );
