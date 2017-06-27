@@ -28,10 +28,13 @@ localparam R_Type_ADD    = 9'b111_100000;
 localparam R_Type_SUB	 = 9'b111_100010;
 localparam R_Type_SLL	 = 9'b111_000000;
 localparam R_Type_SRL	 = 9'b111_000010;
+
+
 // I type
 localparam I_Type_ADDI   = 9'b100_xxxxxx;
 localparam I_Type_ORI    = 9'b101_xxxxxx;
 localparam I_Type_BEQ	 = 9'b110_xxxxxx;
+localparam I_Type_BNE  	 = 9'b110_xxxxxx;
 
 
 reg [3:0] ALUControlValues;
@@ -48,9 +51,12 @@ always@(Selector)begin
 		R_Type_SUB:		ALUControlValues = 4'b0100;
 		R_Type_SLL:		ALUControlValues = 4'b0101;
 		R_Type_SRL: 	ALUControlValues = 4'b0110;
+		
 		I_Type_ADDI:   ALUControlValues = 4'b0011;
 		I_Type_ORI:    ALUControlValues = 4'b0001;
-		I_Type_BEQ:    ALUControlValues = 4'b0100;
+		I_Type_BEQ:    ALUControlValues = 4'b0100;		
+		I_Type_BNE:    ALUControlValues = 4'b0100;
+		
 		default: ALUControlValues = 4'b1001;
 	endcase
 end

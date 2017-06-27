@@ -49,8 +49,7 @@ assign  PortOut = 0;
 wire BranchNE_wire;
 wire BranchEQ_wire;
 wire RegDst_wire;
-wire NotZeroANDBrachNE;
-wire ZeroANDBrachEQ;
+wire BranchEQ_XOR_BranchNE_wire;
 wire ORForBranch;
 wire ALUSrc_wire;
 wire RegWrite_wire;
@@ -244,12 +243,14 @@ BranchAdder
 	.Result(BranchAdder_Result)
 );
 
+
+
 Multiplexer2to1
 MUX_ForBranchOrPC
 (
 	.MUX_Data0(PC_4_wire),
 	.MUX_Data1(BranchAdder_Result),
-	.Selector(ZeroANDBrachEQ),
+	.Selector(BranchEQ_XOR_BranchNE_wire),
 	.MUX_Output(MUX_Branch_Result)
 );
 
@@ -306,7 +307,7 @@ MUX_ForALUOrRAM
 
 
 assign ALUResultOut = ALUResult_wire;
-assign ZeroANDBrachEQ = BranchEQ_wire & Zero_wire;
+assign BranchEQ_XOR_BranchNE_wire = (BranchEQ_wire&Zero_wire) ^ (BranchNE_wire & ~ Zero_wire);
 
 endmodule
 
