@@ -48,7 +48,7 @@ assign  PortOut = 0;
 // Data types to connect modules
 wire BranchNE_wire;
 wire BranchEQ_wire;
-wire RegDst_wire;
+wire [1:0]RegDst_wire;
 wire BranchEQ_XOR_BranchNE_wire;
 wire ORForBranch;
 wire ALUSrc_wire;
@@ -58,7 +58,7 @@ wire ExtendSide_wire;
 wire [1:0]Jump_wire;
 wire MemRead_wire;
 wire MemWrite_wire;
-wire MemToReg_wire;
+wire [1:0]MemToReg_wire;
 
 wire [2:0] ALUOp_wire;
 wire [3:0] ALUOperation_wire;
@@ -145,7 +145,7 @@ PC_Puls_4
 //******************************************************************/
 //******************************************************************/
 //******************************************************************/
-Multiplexer2to1
+Multiplexer3to1
 #(
 	.NBits(5)
 )
@@ -154,6 +154,7 @@ MUX_ForRTypeAndIType
 	.Selector(RegDst_wire),
 	.MUX_Data0(Instruction_wire[20:16]),
 	.MUX_Data1(Instruction_wire[15:11]),
+	.MUX_Data2(5'd31),
 	
 	.MUX_Output(WriteRegister_wire)
 
@@ -267,7 +268,7 @@ ShiftJump
 );
 
 
-Multiplexer2to1_2
+Multiplexer3to1
 MUX_ForJumpOrBranch
 (
 	.MUX_Data0(MUX_Branch_Result),
@@ -296,11 +297,12 @@ RAMDataMemory
 	.clk(clk)
 );
 
-Multiplexer2to1
+Multiplexer3to1
 MUX_ForALUOrRAM
 (
 	.MUX_Data0(ALUResult_wire),
 	.MUX_Data1(ReadDataRAM_wire),
+	.MUX_Data2(PC_4_wire),
 	.MUX_Output(MUX_ALURAM_Result),
 	.Selector(MemToReg_wire)
 	

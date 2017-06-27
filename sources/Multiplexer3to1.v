@@ -1,4 +1,4 @@
-module Multiplexer2to1_2
+module Multiplexer3to1
 #(
 	parameter NBits=32
 )

@@ -15,12 +15,12 @@ module Control
 (
 	input [5:0]OP,
 	input [5:0]Funct,
-	output [1:0]Jump, //00 -no jump 01 jump 10 jr
-	output RegDst,
+	output [1:0]Jump,		//00 no jump	//01 jump	//10 jr
+	output [1:0]RegDst,	//00 rt 			//01 rd 		//10 31D
 	output BranchEQ,
 	output BranchNE,
 	output MemRead,
-	output MemToReg,
+	output [1:0]MemToReg, //00 ALU		//01 RAM		//10 PC+4
 	output MemWrite,
 	output ALUSrc,
 	output RegWrite,
@@ -39,43 +39,49 @@ localparam I_Type_BNE = 6'h05;
 localparam I_Type_SW = 6'h2b;
 localparam I_Type_LW = 6'h23;
 localparam J_Type_JUMP = 6'h02;
+localparam J_Type_JAL = 6'h03;
 
 localparam R_Type_JR = 6'h08; 
 
-reg [13:0] ControlValues;
+reg [15:0] ControlValues;
 
 always@(OP, Funct) begin
 	casex(OP)
 		R_Type:
 			begin
 				if (Funct == R_Type_JR)
-					ControlValues = 14'b10_01_000_00_00_xxx;
-					
+					ControlValues = 16'b10_0_01_0_00_0_00_00_xxx;					
 				else	
-					ControlValues= 14'b00_01_001_00_00_111;
-					
+					ControlValues=  16'b00_0_01_0_00_1_00_00_111;					
 			end
-		I_Type_ADDI:  ControlValues= 14'b00_00_101_00_00_100;
-		I_Type_ORI:   ControlValues= 14'b00_00_101_00_00_101;
-		I_Type_LUI:   ControlValues= 14'b00_10_101_00_00_100;
-		I_Type_BEQ:	  ControlValues= 14'b00_0x_0x0_00_01_110;
-		I_Type_BNE:	  ControlValues= 14'b00_0x_0x0_00_10_110;		
-		I_Type_SW: 	  ControlValues= 14'b00_0x_1x0_01_00_100;
-		I_Type_LW:    ControlValues= 14'b00_00_111_10_00_100;
-		J_Type_JUMP:  ControlValues= 14'b01_00_000_00_00_xxx;
+			
+		I_Type_ADDI:  ControlValues= 16'b00_0_00_1_00_1_00_00_100;
+		I_Type_ORI:   ControlValues= 16'b00_0_00_1_00_1_00_00_101;
+		I_Type_LUI:   ControlValues= 16'b00_1_00_1_00_1_00_00_100;
+		I_Type_BEQ:	  ControlValues= 16'b00_0_xx_0_xx_0_00_01_110;
+		I_Type_BNE:	  ControlValues= 16'b00_0_xx_0_xx_0_00_10_110;		
+		I_Type_SW: 	  ControlValues= 16'b00_0_xx_1_xx_0_01_00_100;
+		I_Type_LW:    ControlValues= 16'b00_0_00_1_01_1_10_00_100;
+		J_Type_JUMP:  ControlValues= 16'b01_0_00_0_00_0_00_00_xxx;
+		J_Type_JAL:	  ControlValues= 16'b01_0_10_0_10_1_00_00_xxx;
 		default:
-			ControlValues= 14'b00000000000000;
+			ControlValues= 16'b0000000000000000;
 		endcase
 end	
 
-assign Jump[1] = ControlValues[13];
-assign Jump[0] = ControlValues[12];
+assign Jump[1] = ControlValues[15];
+assign Jump[0] = ControlValues[14];
 
-assign ExtendSide = ControlValues[11];	
-assign RegDst = ControlValues[10];
+assign ExtendSide = ControlValues[13];
 
-assign ALUSrc = ControlValues[9];
-assign MemToReg = ControlValues[8];
+assign RegDst[1] = ControlValues[12];	
+assign RegDst[0] = ControlValues[11];
+
+assign ALUSrc = ControlValues[10];
+
+assign MemToReg[1] = ControlValues[9];
+assign MemToReg[0] = ControlValues[8];
+
 assign RegWrite = ControlValues[7];
 
 assign MemRead = ControlValues[6];
