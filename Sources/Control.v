@@ -33,6 +33,7 @@ module Control
 localparam R_Type = 0;
 localparam I_Type_ADDI = 6'h8;
 localparam I_Type_ORI = 6'h0d;
+localparam I_Type_ANDI= 6'h0c;
 localparam I_Type_LUI = 6'h0f;
 localparam I_Type_BEQ = 6'h04;
 localparam I_Type_BNE = 6'h05;
@@ -57,6 +58,7 @@ always@(OP, Funct) begin
 			
 		I_Type_ADDI:  ControlValues= 17'b00_00_00_1_00_1_00_00_100;
 		I_Type_ORI:   ControlValues= 17'b00_10_00_1_00_1_00_00_101;
+		I_Type_ANDI:  ControlValues= 17'b00_10_00_1_00_1_00_00_111;
 		I_Type_LUI:   ControlValues= 17'b00_01_00_1_00_1_00_00_100;
 		I_Type_BEQ:	  ControlValues= 17'b00_00_xx_0_xx_0_00_01_110;
 		I_Type_BNE:	  ControlValues= 17'b00_00_xx_0_xx_0_00_10_110;		
