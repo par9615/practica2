@@ -27,7 +27,7 @@
 
 module MIPS_Processor
 #(
-	parameter MEMORY_DEPTH = 1024
+	parameter MEMORY_DEPTH = 256
 )
 
 (
@@ -285,7 +285,7 @@ MUX_ForJumpOrBranch
 DataMemory
 #(
 	.DATA_WIDTH(32),
-	.MEMORY_DEPTH(256)
+	.MEMORY_DEPTH(MEMORY_DEPTH)
 )
 RAMDataMemory
 (
