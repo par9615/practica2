@@ -24,7 +24,7 @@ module Control
 	output MemWrite,
 	output ALUSrc,
 	output RegWrite,
-	output ExtendSide,
+	output [1:0]ExtendSide,
 	
 	output [2:0]ALUOp
 	
@@ -43,36 +43,37 @@ localparam J_Type_JAL = 6'h03;
 
 localparam R_Type_JR = 6'h08; 
 
-reg [15:0] ControlValues;
+reg [16:0] ControlValues;
 
 always@(OP, Funct) begin
 	casex(OP)
 		R_Type:
 			begin
 				if (Funct == R_Type_JR)
-					ControlValues = 16'b10_0_01_0_00_0_00_00_xxx;					
+					ControlValues = 17'b10_00_01_0_00_0_00_00_xxx;					
 				else	
-					ControlValues=  16'b00_0_01_0_00_1_00_00_111;					
+					ControlValues=  17'b00_00_01_0_00_1_00_00_111;					
 			end
 			
-		I_Type_ADDI:  ControlValues= 16'b00_0_00_1_00_1_00_00_100;
-		I_Type_ORI:   ControlValues= 16'b00_0_00_1_00_1_00_00_101;
-		I_Type_LUI:   ControlValues= 16'b00_1_00_1_00_1_00_00_100;
-		I_Type_BEQ:	  ControlValues= 16'b00_0_xx_0_xx_0_00_01_110;
-		I_Type_BNE:	  ControlValues= 16'b00_0_xx_0_xx_0_00_10_110;		
-		I_Type_SW: 	  ControlValues= 16'b00_0_xx_1_xx_0_01_00_100;
-		I_Type_LW:    ControlValues= 16'b00_0_00_1_01_1_10_00_100;
-		J_Type_JUMP:  ControlValues= 16'b01_0_00_0_00_0_00_00_xxx;
-		J_Type_JAL:	  ControlValues= 16'b01_0_10_0_10_1_00_00_xxx;
+		I_Type_ADDI:  ControlValues= 17'b00_00_00_1_00_1_00_00_100;
+		I_Type_ORI:   ControlValues= 17'b00_10_00_1_00_1_00_00_101;
+		I_Type_LUI:   ControlValues= 17'b00_01_00_1_00_1_00_00_100;
+		I_Type_BEQ:	  ControlValues= 17'b00_00_xx_0_xx_0_00_01_110;
+		I_Type_BNE:	  ControlValues= 17'b00_00_xx_0_xx_0_00_10_110;		
+		I_Type_SW: 	  ControlValues= 17'b00_00_xx_1_xx_0_01_00_100;
+		I_Type_LW:    ControlValues= 17'b00_00_00_1_01_1_10_00_100;
+		J_Type_JUMP:  ControlValues= 17'b01_00_00_0_00_0_00_00_xxx;
+		J_Type_JAL:	  ControlValues= 17'b01_00_10_0_10_1_00_00_xxx;
 		default:
-			ControlValues= 16'b0000000000000000;
+			ControlValues= 17'b00000000000000000;
 		endcase
 end	
 
-assign Jump[1] = ControlValues[15];
-assign Jump[0] = ControlValues[14];
+assign Jump[1] = ControlValues[16];
+assign Jump[0] = ControlValues[15];
 
-assign ExtendSide = ControlValues[13];
+assign ExtendSide[1] = ControlValues[14];
+assign ExtendSide[0] = ControlValues[13];
 
 assign RegDst[1] = ControlValues[12];	
 assign RegDst[0] = ControlValues[11];

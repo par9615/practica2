@@ -54,7 +54,7 @@ wire ORForBranch;
 wire ALUSrc_wire;
 wire RegWrite_wire;
 wire Zero_wire;
-wire ExtendSide_wire;
+wire [1:0]ExtendSide_wire;
 wire [1:0]Jump_wire;
 wire MemRead_wire;
 wire MemWrite_wire;
