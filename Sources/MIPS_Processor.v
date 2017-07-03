@@ -1,6 +1,4 @@
-/******************************************************************
-* Description
-*	This is the top-level of a MIPS processor that can execute the next set of instructions:
+/*	This is the top-level of a MIPS processor that can execute the next set of instructions:
 *		add
 *		addi
 *		sub
@@ -86,6 +84,9 @@ wire [31:0] MUX_ALURAM_Result;
 wire [31:0] ReadDataRAM_wire;
 integer ALUStatus;
 
+
+wire [31:0]test_pipe1;
+wire [31:0]text_pipe2;
 
 //******************************************************************/
 //******************************************************************/
@@ -308,6 +309,18 @@ MUX_ForALUOrRAM
 	
 );
 
+
+/**************PIPELINES***************/
+/**************************************/
+PipeFetch_Decode
+FEDE
+(
+	.clk(clk),
+	.Instruction_F(Instruction_wire),
+	.PC_4_F(PC_4_wire),	
+	.Instruction_D(test_pipe1),
+	.PC_4_D(test_pipe2)
+);
 
 
 assign ALUResultOut = ALUResult_wire;
