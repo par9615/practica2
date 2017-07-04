@@ -47,20 +47,20 @@ assign  PortOut = 0;
 
 wire BranchEQ_XOR_BranchNE_wire; //renombrar
 
-wire Zero_wire; //este no se le pone _D
+ //este no se le pone _D
 wire [31:0] MUX_PC_wire;
 wire [31:0] PC_wire;
 wire [2:0] ALUOp_wire;
 
 wire [31:0] ReadData2OrInmmediate_wire;
-wire [31:0] ALUResult_wire;
+
 wire [31:0] InmmediateExtendAnded_wire;
 wire [31:0] PCtoBranch_wire;
 wire [31:0] ShiftLeft2_Branch_wire;
-wire [31:0] BranchAdder_Result;
+
 wire [31:0] MUX_Branch_Result;
 wire [31:0] MUX_Jump_Result;
-wire [31:0] ShiftLeft2_Jump_wire;
+
 wire [31:0] MUX_ALURAM_Result;
 wire [31:0] ReadDataRAM_wire;
 
@@ -105,18 +105,21 @@ wire MemRead_E;
 wire MemWrite_E;
 wire [1:0]MemToReg_E;
 
+wire [31:0]BranchAdderResult_E;
+wire [31:0]ALUResult_E;
 wire [31:0]PC_4_E;
 wire [31:0]ReadData1_E;
 wire [31:0]ReadData2_E;
 wire [31:0]InmmediateExtend_E;
-wire [31:0]ALUResult_E;
 wire [31:0]PCBranch_E;
 wire [31:0]WriteData_E;
+wire [31:0]ShiftLeft2_Jump_E;
 wire [25:0]JumpAddress_E;
 wire [4:0]WriteRegister_E;
 wire [4:0]Shamt_E;
 wire [4:0]Rd_E;
 wire [4:0]Rt_E;
+wire Zero_E;
 
 //memory_stage
 wire [1:0]MemToReg_M;
@@ -259,8 +262,8 @@ ArithmeticLogicUnit
 	.ALUOperation(ALUOperation_E),
 	.A(ReadData1_E),
 	.B(ReadData2OrInmmediate_wire),
-	.Zero(Zero_wire), //hace falta cambiar
-	.ALUResult(ALUResult_wire) //hace falta cambiar
+	.Zero(Zero_E), 
+	.ALUResult(ALUResult_E) 
 );
 
 
@@ -280,7 +283,7 @@ BranchAdder
 (
 	.Data0(PC_4_E),
 	.Data1(ShiftLeft2_Branch_wire),
-	.Result(BranchAdder_Result) //falta conectar donde va
+	.Result(BranchAdderResult_E) 
 );
 
 
@@ -288,10 +291,10 @@ BranchAdder
 Multiplexer2to1
 MUX_ForBranchOrPC
 (
-	.MUX_Data0(PC_4_wire),
-	.MUX_Data1(BranchAdder_Result),
-	.Selector(BranchEQ_XOR_BranchNE_wire),
-	.MUX_Output(MUX_Branch_Result)
+	.MUX_Data0(PC_4_wire), //falta conectar
+	.MUX_Data1(BranchAdder_Result), //falta conectar
+	.Selector(BranchEQ_XOR_BranchNE_wire), //falta conectar
+	.MUX_Output(MUX_Branch_Result) //creo que queda igual
 );
 
 
@@ -301,19 +304,19 @@ MUX_ForBranchOrPC
 ShiftLeft2
 ShiftJump
 (
-	.DataInput(JumpAddress_E), //hace falta cambiar
-	.DataOutput(ShiftLeft2_Jump_wire)
+	.DataInput(JumpAddress_E), 
+	.DataOutput(ShiftLeft2_Jump_E)
 );
 
 
 Multiplexer3to1
 MUX_ForJumpOrBranch
 (
-	.MUX_Data0(MUX_Branch_Result),
+	.MUX_Data0(MUX_Branch_Result), //falta cambiar
 	.MUX_Data1({PC_4_wire[31:28],ShiftLeft2_Jump_wire[27:0]}), //hace falta cambiar
-	.MUX_Data2(ReadData1_wire),
-	.Selector(Jump_wire),
-	.MUX_Output(MUX_Jump_Result)
+	.MUX_Data2(ReadData1_wire), //falta cambiar
+	.Selector(Jump_wire), //falta cambiar
+	.MUX_Output(MUX_Jump_Result) //falta cambiar
 );
 
 /**********************************/
@@ -435,13 +438,12 @@ DEEX
 );
 
 // Execute -> Memory
-/*PipeExecute_Memory
+PipeExecute_Memory
 EXME
 (
 	.clk(clk),
 	
-	//control
-	
+	//control	
 	.Jump_E(Jump_E),			
 	.BranchEQ_E(BranchEQ_E),
 	.BranchNE_E(BranchNE_E),
@@ -450,16 +452,28 @@ EXME
 	.MemWrite_E(MemWrite_E),
 	.RegWrite_E(RegWrite_E),
 	
-	//data
+	.Jump_M(Jump_M),			
+	.BranchEQ_M(BranchEQ_M),
+	.BranchNE_M(BranchNE_M),
+	.MemRead_M(MemRead_M),
+	.MemToReg_M(MemToReg_M), 
+	.MemWrite_M(MemWrite_M),
+	.RegWrite_M(RegWrite_M),
 	
+	//data
+	.JumpAddress_E({PC_4_E[31:28],ShiftLeft2_Jump_E[27:0]}),
+	.BranchAdderResult_E(BranchAdderResult_E),
 	.ALUResult_E(ALUResult_E),
-	.WriteData_E(WriteData_E),
+	.ReadData1_E(ReadData1_E),
+	.ReadData2_E(ReadData2_E),
 	.PCBranch_E(PCBranch_E),
 	.WriteReg_E(WriteReg_E),
-	.Zero_E(Zero_wire)
+	.Zero_E(Zero_E),
+	
 	
 );
 
+/*
 // Memory -> Writeback
 PipeMemory_Write
 MEWB
@@ -483,7 +497,7 @@ MEWB
 
 
 //hace falta cambiar el segundo
-assign ALUResultOut = ALUResult_wire;
+assign ALUResultOut = ALUResult_E;
 assign BranchEQ_XOR_BranchNE_wire = (BranchEQ_wire&Zero_wire) ^ (BranchNE_wire & ~ Zero_wire);
 
 endmodule
