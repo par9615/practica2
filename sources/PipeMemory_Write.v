@@ -9,10 +9,10 @@ module PipeMemory_Write
 	//Control
 	
 	input [1:0]MemToReg_M, 
-	input MemWrite_M,
+	input RegWrite_M,
 	
 	output reg[1:0]MemToReg_W, 
-	output reg MemWrite_W,
+	output reg RegWrite_W,
 	
 	//Data
 	
@@ -33,7 +33,7 @@ module PipeMemory_Write
 	always@(negedge clk)
 	begin		
 		MemToReg_W = MemToReg_M;
-		MemWrite_W = MemWrite_M;
+		RegWrite_W = RegWrite_M;
 
 	end
 	

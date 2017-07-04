@@ -79,6 +79,8 @@ module PipeDecode_Execute
 		Rt_E = Rt_D;
 		Rd_E = Rd_D;
 		Shamt_E = Shamt_D;
+		JumpAddress_E= JumpAddress_D;
+		PC_4_E = PC_4_D;
 
 	end
 
