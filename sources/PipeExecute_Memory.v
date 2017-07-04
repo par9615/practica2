@@ -6,6 +6,8 @@ module PipeExecute_Memory
 (
 	input clk,
 	
+	//Control
+	
 	input [1:0]Jump_E,			
 	input BranchEQ_E,
 	input BranchNE_E,
@@ -22,6 +24,7 @@ module PipeExecute_Memory
 	output reg MemWrite_M,
 	output reg RegWrite_M,
 
+	//Data
 	
 	input [31:0]ALUResult_E,
 	input [31:0]WriteData_E,

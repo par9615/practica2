@@ -6,11 +6,15 @@ module PipeMemory_Write
 (
 	input clk,
 	
+	//Control
+	
 	input [1:0]MemToReg_M, 
 	input MemWrite_M,
 	
 	output reg[1:0]MemToReg_W, 
 	output reg MemWrite_W,
+	
+	//Data
 	
 	input [31:0]ReadDataRAM_M,
 	input [31:0]ALUResult_M,
