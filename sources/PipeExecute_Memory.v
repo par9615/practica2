@@ -29,7 +29,7 @@ module PipeExecute_Memory
 	input [31:0]ALUResult_E,
 	input [31:0]ReadData2_E,
 	input [31:0]ReadData1_E,
-	input [31:0]PCBranch_E,
+	//input [31:0]PCBranch_E,
 	input [31:0]BranchAdderResult_E,
 	input [31:0]ShiftLeft2_Jump_E,
 	input [4:0]WriteReg_E,
@@ -38,7 +38,7 @@ module PipeExecute_Memory
 	output reg[31:0]ALUResult_M,
 	output reg[31:0]ReadData2_M,
 	output reg[31:0]ReadData1_M,
-	output reg[31:0]PCBranch_M,
+	//output reg[31:0]PCBranch_M,
 	output reg[31:0]BranchAdderResult_M,
 	output reg[31:0]ShiftLeft2_Jump_M,
 	output reg[4:0]WriteReg_M,
@@ -67,7 +67,7 @@ module PipeExecute_Memory
 		ALUResult_M= ALUResult_E;
 		ReadData1_M = ReadData1_E;
 		ReadData2_M = ReadData2_E;
-		PCBranch_M = PCBranch_E;
+		//PCBranch_M = PCBranch_E;
 		WriteReg_M = WriteReg_E;
 		BranchAdderResult_M = BranchAdderResult_E;
 		ShiftLeft2_Jump_M = ShiftLeft2_Jump_E;

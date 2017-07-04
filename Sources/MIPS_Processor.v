@@ -45,9 +45,9 @@ assign  PortOut = 0;
 //******************************************************************/
 // Data types to connect modules
 
-wire BranchEQ_XOR_BranchNE_wire; //renombrar
+wire BranchEQ_XOR_BranchNE_wire; 
 
- //este no se le pone _D
+
 wire [31:0] MUX_PC_wire;
 wire [31:0] PC_wire;
 wire [2:0] ALUOp_wire;
@@ -81,7 +81,6 @@ wire [1:0]Jump_D;
 wire MemRead_D;
 wire MemWrite_D;
 wire [1:0]MemToReg_D;
-
 
 wire [31:0]ReadData1_D;
 wire [31:0]ReadData2_D;
@@ -119,6 +118,7 @@ wire [4:0]WriteRegister_E;
 wire [4:0]Shamt_E;
 wire [4:0]Rd_E;
 wire [4:0]Rt_E;
+wire [3:0]ALUOperation_E;
 wire Zero_E;
 
 //memory_stage
@@ -470,6 +470,13 @@ EXME
 	.WriteReg_E(WriteReg_E),
 	.Zero_E(Zero_E),
 	
+	.JumpAddress_E(JumpAddress_M),
+	.BranchAdderResult_E(BranchAdderResult_M),
+	.ALUResult_E(ALUResult_M),
+	.ReadData1_E(ReadData1_M),
+	.ReadData2_E(ReadData2_M),
+	.WriteReg_E(WriteReg_M),
+	.Zero_E(Zero_M)
 	
 );
 
