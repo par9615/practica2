@@ -25,7 +25,7 @@
 
 module MIPS_Processor
 #(
-	parameter MEMORY_DEPTH = 256
+	parameter MEMORY_DEPTH = 512
 )
 
 (
