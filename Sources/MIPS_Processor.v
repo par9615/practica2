@@ -88,6 +88,41 @@ integer ALUStatus;
 wire [31:0]test_pipe1;
 wire [31:0]text_pipe2;
 
+//decode_pipe
+wire [31:0]PC_4_D;
+wire [4:0]Rd_D;
+wire [4:0]Rt_D;
+wire [31:0]ReadData1_D;
+wire [31:0]ReadData2_D;
+wire [31:0]InmmediateExtend_D;
+
+//execute_pipe
+wire [1:0]Jump_E;
+wire BranchEQ_E;
+wire BranchNE_E;
+wire MemRead_E;
+wire [1:0]MemToReg_E;
+wire MemWrite_E;
+wire RegWrite_E;
+wire [31:0]ALUResult_E;
+wire [31:0]WriteData_E;
+wire [31:0]PCBranch_E;
+wire [4:0]WriteReg_E;
+
+//memory_pipe
+
+wire [1:0]MemToReg_M;
+wire MemWrite_M;
+
+wire [31:0]ReadDataRAM_M;
+wire [31:0]ALUResult_M;
+wire [31:0]PC_4_M;
+wire [4:0]WriteReg_M;
+
+
+
+
+
 //******************************************************************/
 //******************************************************************/
 //******************************************************************/
@@ -312,15 +347,101 @@ MUX_ForALUOrRAM
 
 /**************PIPELINES***************/
 /**************************************/
+
+// Fetch -> Decode
+
 PipeFetch_Decode
 FEDE
 (
 	.clk(clk),
 	.Instruction_F(Instruction_wire),
-	.PC_4_F(PC_4_wire),	
+	.PC_4_F(PC_4_wire),
+	
 	.Instruction_D(test_pipe1),
 	.PC_4_D(test_pipe2)
 );
+
+// Decode -> Execute
+
+PipeDecode_Execute
+DEEX
+(
+
+	//control
+	
+	.clk(clk),
+	
+	.Jump_D(Jump_wire),	
+	.RegDst_D(RegDst_wire),	
+	.BranchEQ_D(BranchEQ_wire),
+	.BranchNE_D(BranchNE_wire),	
+	.MemRead_D(MemRead_wire),
+	.MemToReg_D(MemToReg_wire), 
+	.MemWrite_D(MemWrite_wire),
+	.ALUSrc_D(ALUSrc_wire),
+	.RegWrite_D(RegWrite_wire),
+	.ExtendSide_D(ExtendSide_wire),	
+	.ALUOp_D(ALUOp_wire),
+	
+	//data
+	
+	.ReadData1_D(ReadData1_D),
+	.ReadData2_D(ReadData2_D),
+	.InmmediateExtend_D(InmmediateExtend_D),
+	.Rt_D(Rt_D),
+	.Rd_D(Rd_D),
+	.PC_4_D(PC_4_D)
+);
+
+// Execute -> Memory
+
+PipeExecute_Memory
+EXME
+(
+	.clk(clk),
+	
+	//control
+	
+	.Jump_E(Jump_E),			
+	.BranchEQ_E(BranchEQ_E),
+	.BranchNE_E(BranchNE_E),
+	.MemRead_E(MemRead_E),
+	.MemToReg_E(MemToReg_E), 
+	.MemWrite_E(MemWrite_E),
+	.RegWrite_E(RegWrite_E),
+	
+	//data
+	
+	.ALUResult_E(ALUResult_E),
+	.WriteData_E(WriteData_E),
+	.PCBranch_E(PCBranch_E),
+	.WriteReg_E(WriteReg_E),
+	.Zero_E(Zero_wire)
+	
+);
+
+// Memory -> Writeback
+
+PipeMemory_Write
+MEWB
+(
+	.clk(clk),
+	
+	//control
+	
+	.MemToReg_M(MemToReg_M),
+	.MemWrite_M(MemWrite_M),	
+	
+	//data
+	
+	.ReadDataRAM_M(ReadDataRAM_M),
+	.ALUResult_M(ALUResult_M),
+	.PC_4_M(PC_4_M),
+	.WriteReg_M(WriteReg_M)
+	
+);
+
+
 
 
 assign ALUResultOut = ALUResult_wire;

@@ -6,6 +6,8 @@ module PipeDecode_Execute
 (
 	input clk,
 	
+	//Control
+	
 	input [1:0]Jump_D,		
 	input [1:0]RegDst_D,	
 	input BranchEQ_D,
@@ -17,7 +19,7 @@ module PipeDecode_Execute
 	input RegWrite_D,
 	input [1:0]ExtendSide_D,	
 	input [2:0]ALUOp_D,
-	
+		
 	output reg[1:0]Jump_E,		
 	output reg[1:0]RegDst_E,	
 	output reg BranchEQ_E,
@@ -30,16 +32,20 @@ module PipeDecode_Execute
 	output reg[1:0]ExtendSide_E,	
 	output reg[2:0]ALUOp_E,
 	
+	//Data
+	
 	input [31:0]ReadData1_D,
 	input [31:0]ReadData2_D,
 	input [31:0]InmmediateExtend_D,
 	input [4:0]Rt_D,
 	input [4:0]Rd_D,
+	input [31:0]PC_4_D,
 	
 	output reg[31:0]ReadData1_E,
 	output reg[31:0]ReadData2_E,
 	output reg[31:0]InmmediateExtend_E,
 	output reg[4:0]Rt_E,
+	output reg [31:0]PC_4_E,
 	output reg[4:0]Rd_E
 	
 );
