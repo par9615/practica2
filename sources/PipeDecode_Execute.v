@@ -17,8 +17,7 @@ module PipeDecode_Execute
 	input MemWrite_D,
 	input ALUSrc_D,
 	input RegWrite_D,
-	input [1:0]ExtendSide_D,	
-	input [2:0]ALUOp_D,
+	input [3:0]ALUOperation_D,
 		
 	output reg[1:0]Jump_E,		
 	output reg[1:0]RegDst_E,	
@@ -28,25 +27,28 @@ module PipeDecode_Execute
 	output reg[1:0]MemToReg_E, 
 	output reg MemWrite_E,
 	output reg ALUSrc_E,
-	output reg RegWrite_E,
-	output reg[1:0]ExtendSide_E,	
-	output reg[2:0]ALUOp_E,
+	output reg RegWrite_E,	
+	output reg[3:0]ALUOperation_E,
 	
 	//Data
 	
 	input [31:0]ReadData1_D,
 	input [31:0]ReadData2_D,
 	input [31:0]InmmediateExtend_D,
+	input [25:0]JumpAddress_D,
 	input [4:0]Rt_D,
 	input [4:0]Rd_D,
 	input [31:0]PC_4_D,
+	input [4:0]shamt_D,
 	
 	output reg[31:0]ReadData1_E,
 	output reg[31:0]ReadData2_E,
 	output reg[31:0]InmmediateExtend_E,
+	output reg[25:0]JumpAddress_E,
 	output reg[4:0]Rt_E,
 	output reg [31:0]PC_4_E,
-	output reg[4:0]Rd_E
+	output reg[4:0]Rd_E,
+	output reg[4:0]shamt_E
 	
 );
 
@@ -64,8 +66,7 @@ module PipeDecode_Execute
 		MemWrite_E = MemWrite_D;
 		ALUSrc_E = ALUSrc_D;
 		RegWrite_E = RegWrite_D;
-		ExtendSide_E = ExtendSide_D;
-		ALUOp_E = ALUOp_D;
+		ALUOperation_E = ALUOperation_D;
 
 	end
 	
@@ -77,6 +78,7 @@ module PipeDecode_Execute
 		InmmediateExtend_E = InmmediateExtend_D;
 		Rt_E = Rt_D;
 		Rd_E = Rd_D;
+		shamt_E = shamt_D;
 
 	end
 
