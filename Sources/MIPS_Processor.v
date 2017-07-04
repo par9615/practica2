@@ -324,11 +324,19 @@ DataMemory
 	.MEMORY_DEPTH(MEMORY_DEPTH)
 )
 RAMDataMemory
-(
+( /*
 	.WriteData(ReadData2_wire),
 	.Address(ALUResult_wire),
 	.MemWrite(MemWrite_wire),
 	.MemRead(MemRead_wire),
+	.ReadData(ReadDataRAM_wire),
+	.clk(clk)
+	*/
+	
+	.WriteData(ReadData2_wire), //incompleto, y creo que al Pipeline Exec - Memory tambien
+	.Address(ALUResult_M),
+	.MemWrite(MemWrite_M),
+	.MemRead(MemRead_M),
 	.ReadData(ReadDataRAM_wire),
 	.clk(clk)
 );
@@ -336,11 +344,23 @@ RAMDataMemory
 Multiplexer3to1
 MUX_ForALUOrRAM
 (
-	.MUX_Data0(ALUResult_wire),
+//antes
+
+	/*.MUX_Data0(ALUResult_wire),
 	.MUX_Data1(ReadDataRAM_wire),
 	.MUX_Data2(PC_4_wire),
+	
 	.MUX_Output(MUX_ALURAM_Result),
-	.Selector(MemToReg_wire)
+	.Selector(MemToReg_wire)*/
+
+// despues
+
+	.MUX_Data0(ALUResult_W),
+	.MUX_Data1(ReadDataRAM_W),
+	.MUX_Data2(PC_4_W),
+	
+	.MUX_Output(MUX_ALURAM_Result),
+	.Selector(MemToReg_W)	
 	
 );
 
