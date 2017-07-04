@@ -39,7 +39,7 @@ module PipeDecode_Execute
 	input [4:0]Rt_D,
 	input [4:0]Rd_D,
 	input [31:0]PC_4_D,
-	input [4:0]shamt_D,
+	input [4:0]Shamt_D,
 	
 	output reg[31:0]ReadData1_E,
 	output reg[31:0]ReadData2_E,
@@ -48,7 +48,7 @@ module PipeDecode_Execute
 	output reg[4:0]Rt_E,
 	output reg [31:0]PC_4_E,
 	output reg[4:0]Rd_E,
-	output reg[4:0]shamt_E
+	output reg[4:0]Shamt_E
 	
 );
 
@@ -78,7 +78,7 @@ module PipeDecode_Execute
 		InmmediateExtend_E = InmmediateExtend_D;
 		Rt_E = Rt_D;
 		Rd_E = Rd_D;
-		shamt_E = shamt_D;
+		Shamt_E = Shamt_D;
 
 	end
 

@@ -105,15 +105,18 @@ wire MemRead_E;
 wire MemWrite_E;
 wire [1:0]MemToReg_E;
 
-
+wire [31:0]PC_4_E;
 wire [31:0]ReadData1_E;
 wire [31:0]ReadData2_E;
 wire [31:0]InmmediateExtend_E;
 wire [31:0]ALUResult_E;
 wire [31:0]PCBranch_E;
 wire [31:0]WriteData_E;
-wire [4:0] WriteRegister_E;
-wire [4:0]shamt_E;
+wire [25:0]JumpAddress_E;
+wire [4:0]WriteRegister_E;
+wire [4:0]Shamt_E;
+wire [4:0]Rd_E;
+wire [4:0]Rt_E;
 
 //memory_stage
 wire [1:0]MemToReg_M;
@@ -252,12 +255,12 @@ ArithmeticLogicUnitControl
 ALU
 ArithmeticLogicUnit 
 (
-	.Shamt(Instruction_wire[10:6]), //hace falta cambiar
-	.ALUOperation(ALUOperation_wire),
-	.A(ReadData1_wire),
+	.Shamt(Shamt_E), 
+	.ALUOperation(ALUOperation_E),
+	.A(ReadData1_E),
 	.B(ReadData2OrInmmediate_wire),
-	.Zero(Zero_wire),
-	.ALUResult(ALUResult_wire)
+	.Zero(Zero_wire), //hace falta cambiar
+	.ALUResult(ALUResult_wire) //hace falta cambiar
 );
 
 
@@ -298,7 +301,7 @@ MUX_ForBranchOrPC
 ShiftLeft2
 ShiftJump
 (
-	.DataInput(Instruction_wire[25:0]), //hace falta cambiar
+	.DataInput(JumpAddress_E), //hace falta cambiar
 	.DataOutput(ShiftLeft2_Jump_wire)
 );
 
@@ -417,7 +420,7 @@ DEEX
 	.Rt_D(Instruction_D[20:16]),
 	.Rd_D(Instruction_D[15:11]),
 	.PC_4_D(PC_4_D),
-	.shamt_D(Instruction_D[10:6]),
+	.Shamt_D(Instruction_D[10:6]),
 	.JumpAddress_D(Instruction_D[25:0]),
 	
 	.ReadData1_E(ReadData1_E),
@@ -426,7 +429,7 @@ DEEX
 	.Rt_E(Rt_E),
 	.Rd_E(Rd_E),
 	.PC_4_E(PC_4_E),
-	.shamt_E(shamt_E),
+	.Shamt_E(Shamt_E),
 	.JumpAddress_E(JumpAddress_E)
 	
 );
@@ -479,7 +482,7 @@ MEWB
 
 
 
-
+//hace falta cambiar el segundo
 assign ALUResultOut = ALUResult_wire;
 assign BranchEQ_XOR_BranchNE_wire = (BranchEQ_wire&Zero_wire) ^ (BranchNE_wire & ~ Zero_wire);
 
