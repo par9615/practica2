@@ -85,10 +85,9 @@ wire [31:0]ReadData2_D;
 wire [31:0]InmmediateExtend_D;
 wire [31:0]Instruction_D;
 wire [31:0]PC_4_D;
-wire [25:0]JumpAddress_D;
+wire [31:0]JumpAddress_D;
 wire [4:0]Rd_D;
 wire [4:0]Rt_D;
-wire [4:0] WriteReg_D;
 wire [3:0]ALUOperation_D;
 
 //execute_stage
@@ -111,7 +110,7 @@ wire [31:0]InmmediateExtend_E;
 wire [31:0]PCBranch_E;
 wire [31:0]WriteData_E;
 wire [31:0]ShiftLeft2_Jump_E;
-wire [25:0]JumpAddress_E;
+wire [31:0]JumpAddress_E;
 wire [4:0]WriteReg_E;
 wire [4:0]Shamt_E;
 wire [4:0]Rd_E;
@@ -131,7 +130,7 @@ wire Zero_M;
 
 wire [31:0]ReadData1_M;
 wire [31:0]ReadData2_M;
-wire [25:0]JumpAddress_M;
+wire [31:0]JumpAddress_M;
 wire [31:0]BranchAdderResult_M;
 wire [31:0]ReadDataRAM_M;
 wire [31:0]ALUResult_M;
@@ -145,7 +144,7 @@ wire RegWrite_W;
 wire [31:0]ReadDataRAM_W;
 wire [31:0]ALUResult_W;
 wire [31:0]PC_4_W;
-wire [31:0]WriteReg_W;
+wire [4:0]WriteReg_W;
 
 
 
@@ -188,7 +187,7 @@ ProgramMemory
 )
 ROMProgramMemory
 (
-	.Address(PC_wire),
+	.Address(PC_wire),//aqui falta algo
 	.Instruction(Instruction_F)
 );
 
@@ -229,7 +228,7 @@ Register_File
 	.clk(clk),
 	.reset(reset),
 	.RegWrite(RegWrite_W), //Conectar desde pipeline MEWB
-	.WriteRegister(WriteReg_M),
+	.WriteRegister(WriteReg_W),
 	.ReadRegister1(Instruction_D[25:21]),
 	.ReadRegister2(Instruction_D[20:16]),
 	.WriteData(MUX_ALURAM_Result), //Se conecta en MEWB, pero ya está
@@ -310,7 +309,7 @@ BranchAdder
 Multiplexer2to1
 MUX_ForBranchOrPC
 (
-	.MUX_Data0(PC_4_M), 
+	.MUX_Data0(PC_4_F), 
 	.MUX_Data1(BranchAdderResult_M), 
 	.Selector(BranchEQ_XOR_BranchNE_wire), 
 	.MUX_Output(MUX_Branch_Result) 
@@ -334,7 +333,7 @@ MUX_ForJumpOrBranch
 	.MUX_Data0(MUX_Branch_Result), //falta cambiar
 	.MUX_Data1(JumpAddress_M), //hace falta cambiar
 	.MUX_Data2(ReadData1_M), //falta cambiar
-	.Selector(Jump_M), //falta cambiar
+	.Selector(Jump_D), //falta cambiar
 	.MUX_Output(MUX_Jump_Result) //falta cambiar
 );
 
@@ -471,8 +470,8 @@ EXME
 	.PC_4_E(PC_4_E),
 	.Zero_E(Zero_E),
 	
-	.JumpAddress_M(JumpAddress_M),
 	.BranchAdderResult_M(BranchAdderResult_M),
+	.JumpAddress_M(JumpAddress_M),
 	.ALUResult_M(ALUResult_M),
 	.ReadData1_M(ReadData1_M),
 	.ReadData2_M(ReadData2_M),
