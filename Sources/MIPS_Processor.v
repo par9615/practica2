@@ -115,6 +115,7 @@ wire [31:0]PCBranch_E;
 wire [31:0]WriteData_E;
 wire [31:0]ShiftLeft2_Jump_E;
 wire [31:0]JumpAddress_E;
+wire [31:0]MUX_ForwardB_Result_E;
 wire [4:0]WriteReg_E;
 wire [4:0]Shamt_E;
 wire [4:0]Rd_E;
@@ -140,6 +141,7 @@ wire [31:0]BranchAdderResult_M;
 wire [31:0]ReadDataRAM_M;
 wire [31:0]ALUResult_M;
 wire [31:0]PC_4_M;
+wire [31:0]MUX_ForwardB_Result_M;
 wire [4:0]WriteReg_M;
 
 //writeback_stage
@@ -151,6 +153,10 @@ wire [31:0]ALUResult_W;
 wire [31:0]PC_4_W;
 wire [4:0]WriteReg_W;
 
+//Forwarding_process
+wire [31:0]MUX_ForwardA_Result;
+wire [1:0]ForwardA;
+wire [1:0]ForwardB;
 
 
 //******************************************************************/
@@ -259,7 +265,7 @@ Multiplexer2to1
 MUX_ForReadDataAndInmediate
 (
 	.Selector(ALUSrc_E),
-	.MUX_Data0(ReadData2_E),
+	.MUX_Data0(MUX_ForwardB_Result_E),
 	.MUX_Data1(InmmediateExtend_E),	
 	.MUX_Output(ReadData2OrInmmediate_wire)
 
@@ -283,7 +289,7 @@ ArithmeticLogicUnit
 (
 	.Shamt(Shamt_E), 
 	.ALUOperation(ALUOperation_E),
-	.A(ReadData1_E),
+	.A(MUX_ForwardA_Result),
 	.B(ReadData2OrInmmediate_wire),
 	.Zero(Zero_E), 
 	.ALUResult(ALUResult_E) 
@@ -353,7 +359,7 @@ DataMemory
 )
 RAMDataMemory
 ( 	
-	.WriteData(ReadData2_M), //incompleto, y creo que al Pipeline Exec - Memory tambien
+	.WriteData(MUX_ForwardB_Result_M), 
 	.Address(ALUResult_M),
 	.MemWrite(MemWrite_M),
 	.MemRead(MemRead_M),
@@ -472,7 +478,7 @@ EXME
 	.BranchAdderResult_E(BranchAdderResult_E),
 	.ALUResult_E(ALUResult_E),
 	.ReadData1_E(ReadData1_E),
-	.ReadData2_E(ReadData2_E),
+	.MUX_ForwardB_Result_E(MUX_ForwardB_Result_E),
 	.WriteReg_E(WriteReg_E),
 	.PC_4_E(PC_4_E),
 	.Zero_E(Zero_E),
@@ -481,7 +487,7 @@ EXME
 	.JumpAddress_M(JumpAddress_M),
 	.ALUResult_M(ALUResult_M),
 	.ReadData1_M(ReadData1_M),
-	.ReadData2_M(ReadData2_M),
+	.MUX_ForwardB_Result_M(MUX_ForwardB_Result_M),
 	.WriteReg_M(WriteReg_M),
 	.PC_4_M(PC_4_M),
 	.Zero_M(Zero_M)
@@ -517,8 +523,42 @@ MEWB
 );
 
 
+//Forwarding Unit
+Forwarding
+ForwardingUnit
+(
+	.Rs_E(Rs_E),
+	.Rt_E(Rt_E),		
+	.RegWrite_M(RegWrite_M),
+	.WriteReg_M(WriteReg_M),	
+	.RegWrite_W(RegWrite_W),
+	.WriteReg_W(WriteReg_W),	
+	.ForwardA(ForwardA),
+	.ForwardB(ForwardB)
+);
 
-//hace falta cambiar el segundo
+Multiplexer3to1
+MUX_ForwardA
+(
+	.MUX_Data0(ReadData1_E),
+	.MUX_Data1(ALUResult_M),
+	.MUX_Data2(MUX_ALURAM_Result),
+	
+	.MUX_Output(MUX_ForwardA_Result),
+	.Selector(ForwardA)	
+);
+
+Multiplexer3to1
+MUX_ForwardB
+(
+	.MUX_Data0(ReadData2_E),
+	.MUX_Data1(ALUResult_M),
+	.MUX_Data2(MUX_ALURAM_Result),
+	
+	.MUX_Output(MUX_ForwardB_Result_E),
+	.Selector(ForwardB)	
+);
+
 assign ALUResultOut = ALUResult_E;
 assign BranchEQ_XOR_BranchNE_wire = (BranchEQ_M&Zero_M) ^ (BranchNE_M & ~ Zero_M);
 
