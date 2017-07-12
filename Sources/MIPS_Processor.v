@@ -86,8 +86,12 @@ wire [31:0]InmmediateExtend_D;
 wire [31:0]Instruction_D;
 wire [31:0]PC_4_D;
 wire [31:0]JumpAddress_D;
-wire [4:0]Rd_D;
+wire [4:0]Rd_D; 
+assign Rd_D = Instruction_D[15:11];
 wire [4:0]Rt_D;
+assign Rt_D = Instruction_D[20:16];
+wire [4:0]Rs_D;
+assign Rs_D = Instruction_D[25:21];
 wire [3:0]ALUOperation_D;
 
 //execute_stage
@@ -115,6 +119,7 @@ wire [4:0]WriteReg_E;
 wire [4:0]Shamt_E;
 wire [4:0]Rd_E;
 wire [4:0]Rt_E;
+wire [4:0]Rs_E;
 wire [3:0]ALUOperation_E;
 wire Zero_E;
 
@@ -420,8 +425,9 @@ DEEX
 	.ReadData1_D(ReadData1_D),
 	.ReadData2_D(ReadData2_D),
 	.InmmediateExtend_D(InmmediateExtend_D),
-	.Rt_D(Instruction_D[20:16]),
-	.Rd_D(Instruction_D[15:11]),
+	.Rt_D(Rt_D),
+	.Rd_D(Rd_D),
+	.Rs_D(Rs_D),
 	.PC_4_D(PC_4_D),
 	.Shamt_D(Instruction_D[10:6]),
 	.JumpAddress_D(Instruction_D[25:0]),
@@ -431,6 +437,7 @@ DEEX
 	.InmmediateExtend_E(InmmediateExtend_E),
 	.Rt_E(Rt_E),
 	.Rd_E(Rd_E),
+	.Rs_E(Rs_E),
 	.PC_4_E(PC_4_E),
 	.Shamt_E(Shamt_E),
 	.JumpAddress_E(JumpAddress_E)

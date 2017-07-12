@@ -38,6 +38,7 @@ module PipeDecode_Execute
 	input [31:0]JumpAddress_D,
 	input [4:0]Rt_D,
 	input [4:0]Rd_D,
+	input [4:0]Rs_D,
 	input [31:0]PC_4_D,
 	input [4:0]Shamt_D,
 	
@@ -48,6 +49,7 @@ module PipeDecode_Execute
 	output reg[4:0]Rt_E,
 	output reg [31:0]PC_4_E,
 	output reg[4:0]Rd_E,
+	output reg[4:0]Rs_E,
 	output reg[4:0]Shamt_E
 	
 );
@@ -78,6 +80,7 @@ module PipeDecode_Execute
 		InmmediateExtend_E = InmmediateExtend_D;
 		Rt_E = Rt_D;
 		Rd_E = Rd_D;
+		Rs_E = Rs_D;
 		Shamt_E = Shamt_D;
 		JumpAddress_E= JumpAddress_D;
 		PC_4_E = PC_4_D;
